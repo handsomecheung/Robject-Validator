@@ -379,12 +379,14 @@ class TestBug < Test::Unit::TestCase
 
   def test_changing_template_value
     change_string = "test changing string"
+    old_string = TopKls.template[:string]
+    old_range = (20..90)
     TopKls.template[:string] = change_string
     TopKls.template[:in_range] = ConfigValidation::BaseTemplate.in_range(200..300)
     validator = ConfigValidation::Validate.new(TopKls)
 
     test_obj = {
-      :string => "test string",
+      :string => old_string,
       :start => 2,
       :end => 11,
     }
@@ -398,7 +400,7 @@ class TestBug < Test::Unit::TestCase
     expect_validate(validator.do_validate(test_obj), true)
 
     test_obj = {
-      :in_range => 30,
+      :in_range => old_range.to_a.choice,
       :string => change_string,
       :start => 2,
       :end => 11,
@@ -413,6 +415,8 @@ class TestBug < Test::Unit::TestCase
     }
     expect_validate(validator.do_validate(test_obj), true)
 
+    TopKls.template[:string] = old_string
+    TopKls.template[:in_range] = ConfigValidation::BaseTemplate.in_range(old_range)
   end
 
   def test_changing_template
@@ -424,6 +428,11 @@ class TestBug < Test::Unit::TestCase
 
     expect_validate(validator.do_validate(1.2), false, :not_include)
     expect_validate(validator.do_validate("1"), false, :not_include)
+
+    AnyofInstance.template = ConfigValidation::BaseTemplate.any_of([
+                                                                    ConfigValidation::BaseTemplate.kind_of(String),
+                                                                    ConfigValidation::BaseTemplate.kind_of(Fixnum),
+                                                                   ])
   end
 
 end
