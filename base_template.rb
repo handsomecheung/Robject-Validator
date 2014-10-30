@@ -4,8 +4,12 @@ module ConfigValidation
     @required = []
     @check_order = false
 
-    def self.get_raw_template_value_from_cls
+    def self.template
       return @template
+    end
+
+    def self.template=(value)
+      @template = value
     end
 
     def self.required
@@ -18,7 +22,7 @@ module ConfigValidation
 
     def initialize(validate_obj)
       @validate_obj = validate_obj
-      @raw_template_value = self.class.get_raw_template_value_from_cls
+      @raw_template_value = self.class.template
       @required = self.class.required
     end
 
