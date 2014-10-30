@@ -437,4 +437,25 @@ class TestBug < Test::Unit::TestCase
                                                                    ])
   end
 
+
+  def test_craate_template_method
+    template = {
+      ConfigValidation::BaseTemplate.any_of((1..10).to_a) => ConfigValidation::BaseTemplate.kind_of(String),
+      :total => ConfigValidation::BaseTemplate.kind_of(Fixnum),
+    }
+    template_cls = ConfigValidation::BaseTemplate.create_template(template)
+    validator = ConfigValidation::Validate.new(template_cls)
+
+    actual_value = {}
+    (1..10).to_a.each do |i|
+      actual_value[i] = i.to_s
+    end
+    actual_value[:total] = 55
+    expect_validate(validator.do_validate(actual_value), true)
+
+
+    actual_value[:total] = 55.0
+    expect_validate(validator.do_validate(actual_value), false, :type_error)
+  end
+
 end

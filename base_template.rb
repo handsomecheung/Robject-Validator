@@ -4,6 +4,13 @@ module ConfigValidation
     @required = []
     @ordered = false
 
+    def self.create_template(template_value)
+      template_cls = Class.new(self) do
+        @template = template_value
+      end
+      return template_cls
+    end
+
     def self.template
       return @template
     end
