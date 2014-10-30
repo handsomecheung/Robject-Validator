@@ -28,7 +28,7 @@ class OrderedList1 < ConfigValidation::BaseTemplate
   list = [:element_1, :element_2, :element_3]
   @template = [any_of(list), :extra_element]
   @required = [:element_1]
-  @check_order = true
+  @ordered = true
 
   def validate(actual_value)
     actual_value.count > 1

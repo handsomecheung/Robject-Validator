@@ -2,7 +2,7 @@
 module ConfigValidation
   class BaseTemplate
     @required = []
-    @check_order = false
+    @ordered = false
 
     def self.template
       return @template
@@ -16,8 +16,8 @@ module ConfigValidation
       return @required.to_a
     end
 
-    def self.check_order
-      return @check_order
+    def self.ordered?
+      return @ordered
     end
 
     def initialize(validate_obj)
@@ -150,7 +150,7 @@ module ConfigValidation
         @validate_obj.raise_invalid_config(:type_error)
       end
 
-      if self.check_order
+      if self.ordered?
         actual_array.zip(_template_value).each do |real_element, template_element|
           if template_element.nil?
             @validate_obj.set_value_hash(:actual_array_element => real_element)
@@ -193,8 +193,8 @@ module ConfigValidation
       return _required
     end
 
-    def check_order
-      return self.class.check_order
+    def ordered?
+      return self.class.ordered?
     end
 
     def do_custom_validate(actual_value)
