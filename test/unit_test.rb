@@ -67,7 +67,9 @@ class TestBug < Test::Unit::TestCase
   def expect_validate(results, status, invalid_type=nil)
     actual_status, actual_msg = results
 
-    p actual_msg if actual_status != status
+    if actual_status != status
+      p "error: #{actual_msg.inspect}"
+    end
 
     assert_equal(status, actual_status)
     if not status
@@ -421,7 +423,7 @@ class TestBug < Test::Unit::TestCase
 
   def test_changing_template
     AnyofInstance.template = ConfigValidation::BaseTemplate.any_of([1.0, 1.1])
-    validator = ConfigValidation::Validate.new(AnyofInstance.template)
+    validator = ConfigValidation::Validate.new(AnyofInstance)
 
     expect_validate(validator.do_validate(1.0), true)
     expect_validate(validator.do_validate(1.1), true)
