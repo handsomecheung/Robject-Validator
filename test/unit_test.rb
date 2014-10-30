@@ -71,8 +71,8 @@ class TestBug < Test::Unit::TestCase
 
     assert_equal(status, actual_status)
     if not status
-      assert_equal(invalid_type, actual_msg[0])
       p actual_msg[1]
+      assert_equal(invalid_type, actual_msg[0])
     end
   end
 
@@ -375,6 +375,55 @@ class TestBug < Test::Unit::TestCase
     ].each do |test_obj|
       expect_validate(validator.do_validate(test_obj), true)
     end
+  end
+
+  def test_changing_template_value
+    change_string = "test changing string"
+    TopKls.template[:string] = change_string
+    TopKls.template[:in_range] = ConfigValidation::BaseTemplate.in_range(200..300)
+    validator = ConfigValidation::Validate.new(TopKls)
+
+    test_obj = {
+      :string => "test string",
+      :start => 2,
+      :end => 11,
+    }
+    expect_validate(validator.do_validate(test_obj), false, :not_eq)
+
+    test_obj = {
+      :string => change_string,
+      :start => 2,
+      :end => 11,
+    }
+    expect_validate(validator.do_validate(test_obj), true)
+
+    test_obj = {
+      :in_range => 30,
+      :string => change_string,
+      :start => 2,
+      :end => 11,
+    }
+    expect_validate(validator.do_validate(test_obj), false, :not_in_range)
+
+    test_obj = {
+      :in_range => 230,
+      :string => change_string,
+      :start => 2,
+      :end => 11,
+    }
+    expect_validate(validator.do_validate(test_obj), true)
+
+  end
+
+  def test_changing_template
+    AnyofInstance.template = ConfigValidation::BaseTemplate.any_of([1.0, 1.1])
+    validator = ConfigValidation::Validate.new(AnyofInstance.template)
+
+    expect_validate(validator.do_validate(1.0), true)
+    expect_validate(validator.do_validate(1.1), true)
+
+    expect_validate(validator.do_validate(1.2), false, :not_include)
+    expect_validate(validator.do_validate("1"), false, :not_include)
   end
 
 end
