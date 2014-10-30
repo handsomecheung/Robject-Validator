@@ -106,7 +106,8 @@ module ConfigValidation
     def validate_required(array)
       self.required.each do |key|
         if not @validate_obj.class.new(array).do_validate([key])[0]
-          ConfigError.raise_invalid_config(:not_required, :required_key => key)
+          @validate_obj.set_value_hash(:required_key => key)
+          @validate_obj.raise_invalid_config(:not_required)
         end
       end
     end
@@ -114,9 +115,10 @@ module ConfigValidation
     def validate_hash(actual_hash)
       _template_value = get_template_value_for_validation
       if actual_hash.class != _template_value.class
-        ConfigError.raise_invalid_config(:type_error, :actual_hash => actual_hash, :template_value => _template_value)
+        @validate_obj.raise_invalid_config(:type_error)
       end
       actual_hash.each_pair do |k, v|
+        @validate_obj.set_value_hash(:actual_hash_key => k)
         if _template_value.keys.include?(k)
           _template_value[k].validate(v)
         else
@@ -128,7 +130,7 @@ module ConfigValidation
             end
           end
           if not is_exist
-            ConfigError.raise_invalid_config(:invalid_key, :actual_value => actual_hash, :actual_value_key => k)
+            @validate_obj.raise_invalid_config(:invalid_key)
           end
         end
       end
@@ -141,20 +143,21 @@ module ConfigValidation
     def validate_array(actual_array)
       _template_value = get_template_value_for_validation
       if actual_array.class != _template_value.class
-        ConfigError.raise_invalid_config(:type_error, :actual_value => actual_array, :template_value => _template_value)
+        @validate_obj.raise_invalid_config(:type_error)
       end
 
       if self.check_order
         actual_array.zip(_template_value).each do |real_element, template_element|
           if template_element.nil?
-            ConfigError.raise_invalid_config(:surplus_element, :actual_value => actual_array, :actual_value_element => real_element)
+            @validate_obj.set_value_hash(:actual_array_element => real_element)
+            @validate_obj.raise_invalid_config(:surplus_element)
           end
           template_element.validate(real_element)
         end
       else
         actual_array.each do |re|
           if _template_value.map {|te| te.do_validate(re)[0]}.none?
-            ConfigError.raise_invalid_config(:invalid_element, :actual_value => actual_array)
+            @validate_obj.raise_invalid_config(:invalid_element)
           end
         end
         self.validate_required(actual_array)
@@ -166,7 +169,7 @@ module ConfigValidation
     def validate_other(actual_value)
       _template_value = get_template_value_for_validation
       if not _template_value == actual_value
-        ConfigError.raise_invalid_config(:not_eq, :actual_value => actual_value, :template_value => _template_value)
+        @validate_obj.raise_invalid_config(:not_eq)
       end
       return [true, ""]
     end
@@ -223,7 +226,7 @@ module ConfigValidation
               end
             end
             if not is_exist
-              ConfigValidation::ConfigError.raise_invalid_config(:not_include, :actual_value => actual_value, :template_value => self.get_template_value)
+              @validate_obj.raise_invalid_config(:not_include)
             end
             [true, ""]
           end
@@ -240,7 +243,7 @@ module ConfigValidation
         def validate_method
           m = lambda do |actual_value|
             if not actual_value.instance_of?(self.get_template_value)
-              ConfigValidation::ConfigError.raise_invalid_config(:type_error, :actual_value => actual_value, :template_value => self.get_template_value)
+              @validate_obj.raise_invalid_config(:type_error)
             end
             [true, ""]
           end
@@ -257,7 +260,7 @@ module ConfigValidation
         def validate_method
           m = lambda do |actual_value|
             if not actual_value.is_a?(self.get_template_value)
-              ConfigValidation::ConfigError.raise_invalid_config(:type_error, :actual_value => actual_value, :template_value => self.get_template_value)
+              @validate_obj.raise_invalid_config(:type_error)
             end
             [true, ""]
           end
@@ -274,7 +277,7 @@ module ConfigValidation
         def validate_method
           m = lambda do |actual_value|
             if not self.get_template_value.include?(actual_value)
-              ConfigValidation::ConfigError.raise_invalid_config(:not_in_range, :actual_value => actual_value, :template_value => self.get_template_value)
+              @validate_obj.raise_invalid_config(:not_in_range)
             end
             [true, ""]
           end

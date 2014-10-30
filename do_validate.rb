@@ -2,6 +2,8 @@
 module ConfigValidation
   class DoValidate
 
+    include ConfigError
+
     def initialize(template)
       if Common.template_cls?(template)
         @template_obj = template.new(self)
@@ -37,13 +39,18 @@ module ConfigValidation
     end
 
     def validate(actual_value)
+      set_value_hash({
+                       :actual_value => actual_value,
+                       :template_value => @template_obj.get_template_value,
+                       :template_value_cls => @template_obj.class,
+                     })
       status, msg = @validate_method[actual_value]
       if not status
         raise ConfigError::InvalidConfig, msg
       else
         # 调用方法自定义的验证方法
         if not custom_validate(actual_value)
-          ConfigError.raise_invalid_config(:self_validate_fail, :template_value_cls => @template_obj.class)
+          raise_invalid_config(:self_validate_fail)
         end
         return true, ""
       end
@@ -65,6 +72,11 @@ module ConfigValidation
 
     def get_option
       return {}
+    end
+
+    def set_value_hash(hash={})
+      @value_hash ||= {}
+      @value_hash.merge!(hash)
     end
 
   end
