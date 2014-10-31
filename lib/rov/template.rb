@@ -48,7 +48,6 @@ module Rov
       value = @raw_template_value
       validate_option = get_validate_option()
 
-      # 检查是否以 json 参数来验证，是的话，转换 hash 的所有 key 和 symbol 为字符串
       if validate_option[:json]
         if value.is_a?(Hash)
           value = Common.string_hash_key(value)

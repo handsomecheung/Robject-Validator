@@ -1,4 +1,4 @@
-# -*- encoding : utf-8 -*-
+# -*- coding : utf-8 -*-
 module Rov
   class Validate
     def self.validate(template, actual_value, option={})

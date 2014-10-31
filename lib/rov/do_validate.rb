@@ -48,7 +48,6 @@ module Rov
       if not status
         raise ConfigError::InvalidConfig, msg
       else
-        # 调用方法自定义的验证方法
         if not custom_validate(actual_value)
           raise_invalid_config(:self_validate_fail)
         end
