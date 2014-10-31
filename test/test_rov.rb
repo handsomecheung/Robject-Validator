@@ -397,8 +397,9 @@ class TestBug < Test::Unit::TestCase
     }
     expect_validate(validator.do_validate(test_obj), true)
 
+    old_range_list = old_range.to_a
     test_obj = {
-      :in_range => old_range.to_a.choice,
+      :in_range => old_range_list[rand(old_range_list.length)],
       :string => change_string,
       :start => 2,
       :end => 11,
