@@ -1,7 +1,7 @@
 # -*- coding : utf-8 -*-
 module Rov
   module ConfigError
-    class InvalidConfig < Exception
+    class InvalidConfig < StandardError
     end
 
     def raise_invalid_config(invalid_type)
