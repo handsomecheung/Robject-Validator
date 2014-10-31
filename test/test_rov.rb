@@ -1,8 +1,10 @@
 # -*- coding : utf-8 -*-
 $KCODE = 'utf8'
 
+$LOAD_PATH << File.expand_path('../../lib/', __FILE__)
+
 require 'test/unit'
-require File.expand_path('../../lib/rov', __FILE__)
+require 'rov'
 
 class Hash1 < Rov::Template
   key_list = ["hash_key_1", "hash_key_2", "hash_key_3"]
