@@ -6,7 +6,7 @@ require File.expand_path("../lib/hash_with_symbol_access", __FILE__)
 module Rov
   module Common
     def self.template_cls?(template)
-      return (template.class == Class and template.superclass == BaseTemplate)
+      return (template.class == Class and template.superclass == Template)
     end
 
     def self.string_hash_key(hash)

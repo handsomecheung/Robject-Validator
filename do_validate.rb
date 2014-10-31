@@ -8,7 +8,7 @@ module Rov
       if Common.template_cls?(template)
         @template_obj = template.new(self)
       else
-        @template_obj = BaseTemplate.new(self)
+        @template_obj = Template.new(self)
         @template_obj.set_template_value(template)
       end
 

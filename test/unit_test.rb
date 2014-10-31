@@ -9,12 +9,12 @@ require File.expand_path('../../validate.rb', __FILE__)
 require File.expand_path('../../base_template.rb', __FILE__)
 require File.expand_path('../../do_validate.rb', __FILE__)
 
-class Hash1 < Rov::BaseTemplate
+class Hash1 < Rov::Template
   key_list = ["hash_key_1", "hash_key_2", "hash_key_3"]
   @template = {any_of(key_list.map{|s| s.to_sym}) => instance_of(Fixnum)}
 end
 
-class List1 < Rov::BaseTemplate
+class List1 < Rov::Template
   list = [:element_1, :element_2, :element_3]
   @template = [any_of(list), :extra_element]
   @required = [:element_1]
@@ -24,7 +24,7 @@ class List1 < Rov::BaseTemplate
   end
 end
 
-class OrderedList1 < Rov::BaseTemplate
+class OrderedList1 < Rov::Template
   list = [:element_1, :element_2, :element_3]
   @template = [any_of(list), :extra_element]
   @required = [:element_1]
@@ -35,15 +35,15 @@ class OrderedList1 < Rov::BaseTemplate
   end
 end
 
-class AnyofTemplate < Rov::BaseTemplate
+class AnyofTemplate < Rov::Template
   @template = any_of([List1, Hash1])
 end
 
-class AnyofInstance < Rov::BaseTemplate
+class AnyofInstance < Rov::Template
   @template = any_of([kind_of(String), kind_of(Fixnum)])
 end
 
-class TopKls < Rov::BaseTemplate
+class TopKls < Rov::Template
   @template = {
     :in_range => in_range(20..90),
     :hash => Hash1,
@@ -384,7 +384,7 @@ class TestBug < Test::Unit::TestCase
     old_string = TopKls.template[:string]
     old_range = (20..90)
     TopKls.template[:string] = change_string
-    TopKls.template[:in_range] = Rov::BaseTemplate.in_range(200..300)
+    TopKls.template[:in_range] = Rov::Template.in_range(200..300)
     validator = Rov::Validate.new(TopKls)
 
     test_obj = {
@@ -418,11 +418,11 @@ class TestBug < Test::Unit::TestCase
     expect_validate(validator.do_validate(test_obj), true)
 
     TopKls.template[:string] = old_string
-    TopKls.template[:in_range] = Rov::BaseTemplate.in_range(old_range)
+    TopKls.template[:in_range] = Rov::Template.in_range(old_range)
   end
 
   def test_changing_template
-    AnyofInstance.template = Rov::BaseTemplate.any_of([1.0, 1.1])
+    AnyofInstance.template = Rov::Template.any_of([1.0, 1.1])
     validator = Rov::Validate.new(AnyofInstance)
 
     expect_validate(validator.do_validate(1.0), true)
@@ -431,19 +431,19 @@ class TestBug < Test::Unit::TestCase
     expect_validate(validator.do_validate(1.2), false, :not_include)
     expect_validate(validator.do_validate("1"), false, :not_include)
 
-    AnyofInstance.template = Rov::BaseTemplate.any_of([
-                                                                    Rov::BaseTemplate.kind_of(String),
-                                                                    Rov::BaseTemplate.kind_of(Fixnum),
+    AnyofInstance.template = Rov::Template.any_of([
+                                                                    Rov::Template.kind_of(String),
+                                                                    Rov::Template.kind_of(Fixnum),
                                                                    ])
   end
 
 
   def test_craate_template_method
     template = {
-      Rov::BaseTemplate.any_of((1..10).to_a) => Rov::BaseTemplate.kind_of(String),
-      :total => Rov::BaseTemplate.kind_of(Fixnum),
+      Rov::Template.any_of((1..10).to_a) => Rov::Template.kind_of(String),
+      :total => Rov::Template.kind_of(Fixnum),
     }
-    template_cls = Rov::BaseTemplate.create_template(template)
+    template_cls = Rov::Template.create_template(template)
     validator = Rov::Validate.new(template_cls)
 
     actual_value = {}

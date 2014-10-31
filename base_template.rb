@@ -1,6 +1,6 @@
 # -*- coding : utf-8 -*-
 module Rov
-  class BaseTemplate
+  class Template
     @required = []
     @ordered = false
 
@@ -225,7 +225,7 @@ module Rov
 
     # ---------------------------------------------------
     def self.any_of(lst)
-      any_of_cls = Class.new(Rov::BaseTemplate) do
+      any_of_cls = Class.new(Rov::Template) do
         @template = AnyOfArray.new(lst)
         def validate_method
           m = lambda do |actual_value|
@@ -248,7 +248,7 @@ module Rov
     end
 
     def self.instance_of(cls)
-      instance_of_cls = Class.new(Rov::BaseTemplate) do
+      instance_of_cls = Class.new(Rov::Template) do
         @template = cls
 
         def validate_method
@@ -265,7 +265,7 @@ module Rov
     end
 
     def self.kind_of(cls)
-      kind_of_cls = Class.new(Rov::BaseTemplate) do
+      kind_of_cls = Class.new(Rov::Template) do
         @template = cls
 
         def validate_method
@@ -282,7 +282,7 @@ module Rov
     end
 
     def self.in_range(_range)
-      in_range_cls = Class.new(Rov::BaseTemplate) do
+      in_range_cls = Class.new(Rov::Template) do
         @template = _range
 
         def validate_method
