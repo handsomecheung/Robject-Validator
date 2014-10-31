@@ -11,4 +11,5 @@ Gem::Specification.new do |s|
   s.homepage = %q{https://github.com/handsomecheung/Robject-Validator}
   s.files = Dir.glob("lib/**/*") + ["README.md"]
   s.require_path = 'lib'
+  s.required_ruby_version = '>= 1.8.7'
 end

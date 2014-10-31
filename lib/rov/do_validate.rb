@@ -61,7 +61,14 @@ module Rov
         status, msg = validate(actual_value)
       rescue ConfigError::InvalidConfig => ex
         status = false
-        msg = ex.message
+
+        # it can `raise` a array when ruby version less 1.9.3. # or the array will be inspected.
+        # so, pass the message to eval() when it is a string.
+        if ex.message.is_a?(String)
+          msg = eval(ex.message)
+        else
+          msg = ex.message
+        end
       end
       return status, msg
     end
