@@ -1,5 +1,4 @@
 # -*- coding : utf-8 -*-
-$KCODE = 'utf8'
 
 $LOAD_PATH << File.expand_path('../../lib/', __FILE__)
 
