@@ -52,7 +52,7 @@ module Rov
       if validate_option[:json]
         if value.is_a?(Hash)
           value = Common.string_hash_key(value)
-          value = value.with_symbol_access
+          value = Common.with_symbol_access(value)
         elsif value.is_a?(Array)
           value = Common.string_array_element(value)
         elsif value.is_a?(Symbol)
@@ -208,7 +208,7 @@ module Rov
       if get_validate_option[:json]
         case
         when actual_value.is_a?(Hash)
-          actual_value = actual_value.with_symbol_access
+          actual_value = Common.with_symbol_access(actual_value)
         when actual_value.is_a?(Array)
           actual_value = Common.string_array_element(actual_value)
         when actual_value.is_a?(Symbol)

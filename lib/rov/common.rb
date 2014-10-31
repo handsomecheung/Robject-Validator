@@ -1,8 +1,5 @@
 # -*- coding : utf-8 -*-
 
-require File.expand_path("../base_template", __FILE__)
-require File.expand_path("../lib/hash_with_symbol_access", __FILE__)
-
 module Rov
   module Common
     def self.template_cls?(template)
@@ -31,5 +28,27 @@ module Rov
       return r
     end
 
+    def self.with_symbol_access(hash)
+      return HashWithSymbolAccess[hash.entries]
+    end
+
+  end
+end
+
+class HashWithSymbolAccess < Hash
+  def [](key)
+    if self.keys.include?(key)
+      return super(key)
+    elsif key.is_a?(Symbol) and self.keys.include?(key.to_s)
+      return super(key.to_s)
+    end
+  end
+
+  def []=(key, value)
+    if self.keys.include?(key)
+      super(key, value)
+    elsif key.is_a?(Symbol) and self.keys.include?(key.to_s)
+      super(key.to_s, value)
+    end
   end
 end

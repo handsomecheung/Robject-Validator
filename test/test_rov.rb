@@ -2,12 +2,7 @@
 $KCODE = 'utf8'
 
 require 'test/unit'
-
-require File.expand_path('../../config_error.rb', __FILE__)
-require File.expand_path('../../common.rb', __FILE__)
-require File.expand_path('../../validate.rb', __FILE__)
-require File.expand_path('../../base_template.rb', __FILE__)
-require File.expand_path('../../do_validate.rb', __FILE__)
+require File.expand_path('../../lib/rov', __FILE__)
 
 class Hash1 < Rov::Template
   key_list = ["hash_key_1", "hash_key_2", "hash_key_3"]
