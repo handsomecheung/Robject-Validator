@@ -2,7 +2,7 @@ require 'lib/rov/version'
 
 Gem::Specification.new do |s|
   s.name = 'rov'
-  s.license = 'GPLv3'
+  s.license = 'GPL-3.0'
   s.summary = "Robject Validator"
   s.description = "Ruby Object validator"
   s.version = Rov::VERSION
