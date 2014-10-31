@@ -1,5 +1,5 @@
 # -*- coding : utf-8 -*-
-module ConfigValidation
+module Rov
   module ConfigError
     class InvalidConfig < Exception
     end

@@ -1,5 +1,5 @@
 # -*- coding : utf-8 -*-
-module ConfigValidation
+module Rov
   class BaseTemplate
     @required = []
     @ordered = false
@@ -225,7 +225,7 @@ module ConfigValidation
 
     # ---------------------------------------------------
     def self.any_of(lst)
-      any_of_cls = Class.new(ConfigValidation::BaseTemplate) do
+      any_of_cls = Class.new(Rov::BaseTemplate) do
         @template = AnyOfArray.new(lst)
         def validate_method
           m = lambda do |actual_value|
@@ -248,7 +248,7 @@ module ConfigValidation
     end
 
     def self.instance_of(cls)
-      instance_of_cls = Class.new(ConfigValidation::BaseTemplate) do
+      instance_of_cls = Class.new(Rov::BaseTemplate) do
         @template = cls
 
         def validate_method
@@ -265,7 +265,7 @@ module ConfigValidation
     end
 
     def self.kind_of(cls)
-      kind_of_cls = Class.new(ConfigValidation::BaseTemplate) do
+      kind_of_cls = Class.new(Rov::BaseTemplate) do
         @template = cls
 
         def validate_method
@@ -282,7 +282,7 @@ module ConfigValidation
     end
 
     def self.in_range(_range)
-      in_range_cls = Class.new(ConfigValidation::BaseTemplate) do
+      in_range_cls = Class.new(Rov::BaseTemplate) do
         @template = _range
 
         def validate_method

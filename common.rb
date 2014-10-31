@@ -3,7 +3,7 @@
 require File.expand_path("../base_template", __FILE__)
 require File.expand_path("../lib/hash_with_symbol_access", __FILE__)
 
-module ConfigValidation
+module Rov
   module Common
     def self.template_cls?(template)
       return (template.class == Class and template.superclass == BaseTemplate)

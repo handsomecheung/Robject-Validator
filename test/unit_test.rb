@@ -9,12 +9,12 @@ require File.expand_path('../../validate.rb', __FILE__)
 require File.expand_path('../../base_template.rb', __FILE__)
 require File.expand_path('../../do_validate.rb', __FILE__)
 
-class Hash1 < ConfigValidation::BaseTemplate
+class Hash1 < Rov::BaseTemplate
   key_list = ["hash_key_1", "hash_key_2", "hash_key_3"]
   @template = {any_of(key_list.map{|s| s.to_sym}) => instance_of(Fixnum)}
 end
 
-class List1 < ConfigValidation::BaseTemplate
+class List1 < Rov::BaseTemplate
   list = [:element_1, :element_2, :element_3]
   @template = [any_of(list), :extra_element]
   @required = [:element_1]
@@ -24,7 +24,7 @@ class List1 < ConfigValidation::BaseTemplate
   end
 end
 
-class OrderedList1 < ConfigValidation::BaseTemplate
+class OrderedList1 < Rov::BaseTemplate
   list = [:element_1, :element_2, :element_3]
   @template = [any_of(list), :extra_element]
   @required = [:element_1]
@@ -35,15 +35,15 @@ class OrderedList1 < ConfigValidation::BaseTemplate
   end
 end
 
-class AnyofTemplate < ConfigValidation::BaseTemplate
+class AnyofTemplate < Rov::BaseTemplate
   @template = any_of([List1, Hash1])
 end
 
-class AnyofInstance < ConfigValidation::BaseTemplate
+class AnyofInstance < Rov::BaseTemplate
   @template = any_of([kind_of(String), kind_of(Fixnum)])
 end
 
-class TopKls < ConfigValidation::BaseTemplate
+class TopKls < Rov::BaseTemplate
   @template = {
     :in_range => in_range(20..90),
     :hash => Hash1,
@@ -79,7 +79,7 @@ class TestBug < Test::Unit::TestCase
   end
 
   def test_corret_object
-    d = ConfigValidation::Validate.new(TopKls)
+    d = Rov::Validate.new(TopKls)
     [
      {
        :in_range => 20,
@@ -121,7 +121,7 @@ class TestBug < Test::Unit::TestCase
   end
 
   def test_corret_object_json
-    d = ConfigValidation::Validate.new(TopKls)
+    d = Rov::Validate.new(TopKls)
     [
      {
        "symbol_class" => "abcd",
@@ -135,7 +135,7 @@ class TestBug < Test::Unit::TestCase
   end
 
   def test_self_validate_fail_on_base_node
-    d = ConfigValidation::Validate.new(TopKls)
+    d = Rov::Validate.new(TopKls)
     [
      {
        :in_range => 20,
@@ -159,7 +159,7 @@ class TestBug < Test::Unit::TestCase
   end
 
   def test_self_validate_fail_on_child_node
-    d = ConfigValidation::Validate.new(TopKls)
+    d = Rov::Validate.new(TopKls)
     test_obj = {
       :in_range => 20,
       :hash => {:hash_key_1 => 3, :hash_key_2 => 23},
@@ -172,7 +172,7 @@ class TestBug < Test::Unit::TestCase
   end
 
   def test_not_include_1
-    d = ConfigValidation::Validate.new(TopKls)
+    d = Rov::Validate.new(TopKls)
     test_obj = {
       :in_range => 20,
       :hash => {:hash_key_1 => 3, :hash_key_2 => 23},
@@ -187,7 +187,7 @@ class TestBug < Test::Unit::TestCase
   end
 
   def test_type_error_1
-    d = ConfigValidation::Validate.new(TopKls)
+    d = Rov::Validate.new(TopKls)
     test_obj = {
       :in_range => 20,
       :hash => {:hash_key_1 => "3", :hash_key_2 => 23},
@@ -201,7 +201,7 @@ class TestBug < Test::Unit::TestCase
   end
 
   def test_type_error_2
-    d = ConfigValidation::Validate.new(TopKls)
+    d = Rov::Validate.new(TopKls)
     test_obj = {
       :in_range => 20,
       :hash => {:hash_key_1 => 3, :hash_key_2 => 23},
@@ -214,7 +214,7 @@ class TestBug < Test::Unit::TestCase
   end
 
   def test_invalid_key_1
-    d = ConfigValidation::Validate.new(TopKls)
+    d = Rov::Validate.new(TopKls)
     test_obj = {
       :in_range => 20,
       :hash => {:hash_key_1 => 3, :hash_key_2 => 23},
@@ -228,7 +228,7 @@ class TestBug < Test::Unit::TestCase
   end
 
   def test_invalid_key_2
-    d = ConfigValidation::Validate.new(TopKls)
+    d = Rov::Validate.new(TopKls)
     test_obj = {
       :in_range => 20,
       :hash => {:hash_key_1s => 3, :hash_key_2 => 23},
@@ -242,7 +242,7 @@ class TestBug < Test::Unit::TestCase
   end
 
   def test_invalid_element_1
-    d = ConfigValidation::Validate.new(TopKls)
+    d = Rov::Validate.new(TopKls)
     test_obj = {
       :in_range => 20,
       :hash => {:hash_key_1 => 3, :hash_key_2 => 23},
@@ -256,7 +256,7 @@ class TestBug < Test::Unit::TestCase
   end
 
   def test_not_in_range_1
-    d = ConfigValidation::Validate.new(TopKls)
+    d = Rov::Validate.new(TopKls)
     [
      {
        :in_range => 19,
@@ -282,7 +282,7 @@ class TestBug < Test::Unit::TestCase
   end
 
   def test_not_eq_1
-    d = ConfigValidation::Validate.new(TopKls)
+    d = Rov::Validate.new(TopKls)
     test_obj = {
       :in_range => 20,
       :hash => {:hash_key_1 => 3, :hash_key_2 => 23},
@@ -296,7 +296,7 @@ class TestBug < Test::Unit::TestCase
   end
 
   def test_not_required_1
-    d = ConfigValidation::Validate.new(TopKls)
+    d = Rov::Validate.new(TopKls)
     test_obj = {
       :in_range => 20,
       :hash => {:hash_key_1 => 3, :hash_key_2 => 23},
@@ -309,14 +309,14 @@ class TestBug < Test::Unit::TestCase
   end
 
   def test_surplus_element_1
-    d = ConfigValidation::Validate.new(OrderedList1)
+    d = Rov::Validate.new(OrderedList1)
 
     list = [:element_3, :extra_element, :element_2]
     expect_validate(d.do_validate(list), false, :surplus_element)
   end
 
   def test_nest_object_correct
-    d = ConfigValidation::Validate.new(TopKls)
+    d = Rov::Validate.new(TopKls)
     test_obj = {
       :in_range => 20,
       :hash => {:hash_key_1 => 3, :hash_key_2 => 23},
@@ -335,7 +335,7 @@ class TestBug < Test::Unit::TestCase
   end
 
   def test_nest_object_2
-    d = ConfigValidation::Validate.new(TopKls)
+    d = Rov::Validate.new(TopKls)
     test_obj = {
       :in_range => 20,
       :hash => {:hash_key_1 => 3, :hash_key_2 => 23},
@@ -354,21 +354,21 @@ class TestBug < Test::Unit::TestCase
   end
 
   def test_any_of_instance_1
-    validator = ConfigValidation::Validate.new(AnyofInstance)
+    validator = Rov::Validate.new(AnyofInstance)
     [1, 3, 5, 123, "abcd", " df ", "\n"].each do |test_obj|
       expect_validate(validator.do_validate(test_obj), true)
     end
   end
 
   def test_any_of_instance_2
-    validator = ConfigValidation::Validate.new(AnyofInstance)
+    validator = Rov::Validate.new(AnyofInstance)
     [1.0, 3.4, 10..99, :abcd].each do |test_obj|
       expect_validate(validator.do_validate(test_obj), false, :not_include)
     end
   end
 
   def test_any_of_template_1
-    validator = ConfigValidation::Validate.new(AnyofTemplate)
+    validator = Rov::Validate.new(AnyofTemplate)
     [
      [:element_3, :element_1, :element_2],
      [:element_1, :extra_element],
@@ -384,8 +384,8 @@ class TestBug < Test::Unit::TestCase
     old_string = TopKls.template[:string]
     old_range = (20..90)
     TopKls.template[:string] = change_string
-    TopKls.template[:in_range] = ConfigValidation::BaseTemplate.in_range(200..300)
-    validator = ConfigValidation::Validate.new(TopKls)
+    TopKls.template[:in_range] = Rov::BaseTemplate.in_range(200..300)
+    validator = Rov::Validate.new(TopKls)
 
     test_obj = {
       :string => old_string,
@@ -418,12 +418,12 @@ class TestBug < Test::Unit::TestCase
     expect_validate(validator.do_validate(test_obj), true)
 
     TopKls.template[:string] = old_string
-    TopKls.template[:in_range] = ConfigValidation::BaseTemplate.in_range(old_range)
+    TopKls.template[:in_range] = Rov::BaseTemplate.in_range(old_range)
   end
 
   def test_changing_template
-    AnyofInstance.template = ConfigValidation::BaseTemplate.any_of([1.0, 1.1])
-    validator = ConfigValidation::Validate.new(AnyofInstance)
+    AnyofInstance.template = Rov::BaseTemplate.any_of([1.0, 1.1])
+    validator = Rov::Validate.new(AnyofInstance)
 
     expect_validate(validator.do_validate(1.0), true)
     expect_validate(validator.do_validate(1.1), true)
@@ -431,20 +431,20 @@ class TestBug < Test::Unit::TestCase
     expect_validate(validator.do_validate(1.2), false, :not_include)
     expect_validate(validator.do_validate("1"), false, :not_include)
 
-    AnyofInstance.template = ConfigValidation::BaseTemplate.any_of([
-                                                                    ConfigValidation::BaseTemplate.kind_of(String),
-                                                                    ConfigValidation::BaseTemplate.kind_of(Fixnum),
+    AnyofInstance.template = Rov::BaseTemplate.any_of([
+                                                                    Rov::BaseTemplate.kind_of(String),
+                                                                    Rov::BaseTemplate.kind_of(Fixnum),
                                                                    ])
   end
 
 
   def test_craate_template_method
     template = {
-      ConfigValidation::BaseTemplate.any_of((1..10).to_a) => ConfigValidation::BaseTemplate.kind_of(String),
-      :total => ConfigValidation::BaseTemplate.kind_of(Fixnum),
+      Rov::BaseTemplate.any_of((1..10).to_a) => Rov::BaseTemplate.kind_of(String),
+      :total => Rov::BaseTemplate.kind_of(Fixnum),
     }
-    template_cls = ConfigValidation::BaseTemplate.create_template(template)
-    validator = ConfigValidation::Validate.new(template_cls)
+    template_cls = Rov::BaseTemplate.create_template(template)
+    validator = Rov::Validate.new(template_cls)
 
     actual_value = {}
     (1..10).to_a.each do |i|

@@ -1,5 +1,5 @@
 # -*- coding : utf-8 -*-
-module ConfigValidation
+module Rov
   class DoValidate
 
     include ConfigError

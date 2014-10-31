@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-module ConfigValidation
+module Rov
   class Validate
     def self.validate(template, actual_value, option={})
       v = self.new(template)
