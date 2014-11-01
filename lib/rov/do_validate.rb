@@ -2,7 +2,7 @@
 module Rov
   class DoValidate
 
-    include ConfigError
+    include RaiseError
 
     def initialize(template)
       if Common.template_cls?(template)
@@ -46,10 +46,10 @@ module Rov
                      })
       status, msg = @validate_method[actual_value]
       if not status
-        raise ConfigError::InvalidConfig, msg
+        raise RaiseError::InvalidConfig, msg
       else
         if not custom_validate(actual_value)
-          raise_invalid_config(:self_validate_fail)
+          raise_validation_error(:self_validate_fail)
         end
         return true, ""
       end
@@ -58,7 +58,7 @@ module Rov
     def do_validate(actual_value)
       begin
         status, msg = validate(actual_value)
-      rescue ConfigError::InvalidConfig => ex
+      rescue RaiseError::InvalidConfig => ex
         status = false
 
         # it can `raise` a array when ruby version less 1.9.3. # or the array will be inspected.

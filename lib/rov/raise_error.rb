@@ -1,14 +1,14 @@
 # -*- coding : utf-8 -*-
 module Rov
-  module ConfigError
+  module RaiseError
     class InvalidConfig < StandardError
     end
 
-    def raise_invalid_config(invalid_type)
-      raise InvalidConfig, [invalid_type, get_error_str(invalid_type)]
+    def raise_validation_error(error_type)
+      raise InvalidConfig, [error_type, get_error_str(error_type)]
     end
 
-    def get_error_str(invalid_type)
+    def get_error_str(error_type)
       template_value = @value_hash[:template_value]
       actual_value = @value_hash[:actual_value]
 
@@ -23,7 +23,7 @@ module Rov
         :not_required => "no required key: `#{@value_hash[:required_key].inspect}` in `#{actual_value.inspect}`",
         :self_validate_fail => "`#{@value_hash[:template_value_cls].inspect}` custom validate method failed",
       }
-      return types[invalid_type] || "#{invalid_type}: #{actual_value.inspect}"
+      return types[error_type] || "#{error_type}: #{actual_value.inspect}"
     end
 
   end

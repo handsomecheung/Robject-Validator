@@ -117,7 +117,7 @@ module Rov
       self.required.each do |key|
         if not @validate_obj.class.new(array).do_validate([key])[0]
           @validate_obj.set_value_hash(:required_key => key)
-          @validate_obj.raise_invalid_config(:not_required)
+          @validate_obj.raise_validation_error(:not_required)
         end
       end
     end
@@ -125,7 +125,7 @@ module Rov
     def validate_hash(actual_hash)
       _template_value = get_template_value_for_validation
       if actual_hash.class != _template_value.class
-        @validate_obj.raise_invalid_config(:type_error)
+        @validate_obj.raise_validation_error(:type_error)
       end
       actual_hash.each_pair do |k, v|
         @validate_obj.set_value_hash(:actual_hash_key => k)
@@ -140,7 +140,7 @@ module Rov
             end
           end
           if not is_exist
-            @validate_obj.raise_invalid_config(:invalid_key)
+            @validate_obj.raise_validation_error(:invalid_key)
           end
         end
       end
@@ -153,21 +153,21 @@ module Rov
     def validate_array(actual_array)
       _template_value = get_template_value_for_validation
       if actual_array.class != _template_value.class
-        @validate_obj.raise_invalid_config(:type_error)
+        @validate_obj.raise_validation_error(:type_error)
       end
 
       if self.ordered?
         actual_array.zip(_template_value).each do |real_element, template_element|
           if template_element.nil?
             @validate_obj.set_value_hash(:actual_array_element => real_element)
-            @validate_obj.raise_invalid_config(:surplus_element)
+            @validate_obj.raise_validation_error(:surplus_element)
           end
           template_element.validate(real_element)
         end
       else
         actual_array.each do |re|
           if _template_value.map {|te| te.do_validate(re)[0]}.none?
-            @validate_obj.raise_invalid_config(:invalid_element)
+            @validate_obj.raise_validation_error(:invalid_element)
           end
         end
         self.validate_required(actual_array)
@@ -179,7 +179,7 @@ module Rov
     def validate_other(actual_value)
       _template_value = get_template_value_for_validation
       if not _template_value == actual_value
-        @validate_obj.raise_invalid_config(:not_eq)
+        @validate_obj.raise_validation_error(:not_eq)
       end
       return [true, ""]
     end
@@ -223,7 +223,7 @@ module Rov
     end
 
     def raise_validation_error(error_type)
-      return @validate_obj.raise_invalid_config(error_type)
+      return @validate_obj.raise_validation_error(error_type)
     end
 
     # ---------------------------------------------------
@@ -240,7 +240,7 @@ module Rov
               end
             end
             if not is_exist
-              @validate_obj.raise_invalid_config(:not_include)
+              @validate_obj.raise_validation_error(:not_include)
             end
             [true, ""]
           end
@@ -257,7 +257,7 @@ module Rov
         def validate_method
           m = lambda do |actual_value|
             if not actual_value.instance_of?(self.get_template_value)
-              @validate_obj.raise_invalid_config(:type_error)
+              @validate_obj.raise_validation_error(:type_error)
             end
             [true, ""]
           end
@@ -274,7 +274,7 @@ module Rov
         def validate_method
           m = lambda do |actual_value|
             if not actual_value.is_a?(self.get_template_value)
-              @validate_obj.raise_invalid_config(:type_error)
+              @validate_obj.raise_validation_error(:type_error)
             end
             [true, ""]
           end
@@ -291,7 +291,7 @@ module Rov
         def validate_method
           m = lambda do |actual_value|
             if not self.get_template_value.include?(actual_value)
-              @validate_obj.raise_invalid_config(:not_in_range)
+              @validate_obj.raise_validation_error(:not_in_range)
             end
             [true, ""]
           end
