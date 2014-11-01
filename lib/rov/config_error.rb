@@ -14,7 +14,7 @@ module Rov
 
       types = {
         :not_include => "#{actual_value.inspect} not in `#{template_value.inspect}`",
-        :type_error => "type of `#{actual_value.inspect}`(#{actual_value.class}) should be `#{template_value}`",
+        :type_error => "type of `#{actual_value.inspect}`(#{actual_value.class}) should be #{template_value.class}",
         :invalid_key => "invalid key `#{@value_hash[:actual_hash_key].inspect}` in `#{actual_value.inspect}`",
         :surplus_element => "surplus element `#{@value_hash[:actual_array_element].inspect}` in `#{actual_value.inspect}`",
         :invalid_element => "invalid element in `#{actual_value.inspect}`",
