@@ -455,4 +455,45 @@ class TestBug < Test::Unit::TestCase
     expect_validate(validator.do_validate(actual_value), false, :type_error)
   end
 
+  def test_custom_template_method
+    def email()
+      email_cls = Class.new(Rov::Template) do
+        # @template =
+        def validate_method
+          m = lambda do |actual_value|
+            if actual_value.is_a?(String) and
+                (actual_value =~ /^[a-zA-Z0-9_.+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-.]+$/) == 0
+              [true, ""]
+            else
+              raise_validation_error(:invalid_email)
+            end
+          end
+          return m
+        end
+      end
+      return email_cls
+    end
+
+    template_cls = Rov::Template.create_template([email])
+    validator = Rov::Validate.new(template_cls)
+
+    actual_value = [
+                    "email@email.com",
+                    "e.m-ail@email.com",
+                    "e.m-ail@em-ail.com",
+                    "e9m-ail@em-ail.com",
+                    "e9m-a_il@em-ail.com",
+                   ]
+    expect_validate(validator.do_validate(actual_value), true)
+
+    actual_value << "email@e@mail.com"
+    expect_validate(validator.do_validate(actual_value), false, :invalid_element)
+
+
+    template_cls = Rov::Template.create_template(email)
+    validator = Rov::Validate.new(template_cls)
+    expect_validate(validator.do_validate("email@e@mail.com"), false, :invalid_email)
+
+  end
+
 end

@@ -222,6 +222,10 @@ module Rov
       return true
     end
 
+    def raise_validation_error(error_type)
+      return @validate_obj.raise_invalid_config(error_type)
+    end
+
     # ---------------------------------------------------
     def self.any_of(lst)
       any_of_cls = Class.new(Rov::Template) do

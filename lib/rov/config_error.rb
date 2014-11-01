@@ -23,7 +23,7 @@ module Rov
         :not_required => "no required key: `#{@value_hash[:required_key].inspect}` in `#{actual_value.inspect}`",
         :self_validate_fail => "`#{@value_hash[:template_value_cls].inspect}` custom validate method failed",
       }
-      return types[invalid_type] || raise("invalid type error: #{invalid_type}")
+      return types[invalid_type] || "#{invalid_type}: #{actual_value.inspect}"
     end
 
   end
