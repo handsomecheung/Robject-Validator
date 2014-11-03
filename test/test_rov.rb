@@ -126,7 +126,7 @@ class TestBug < Test::Unit::TestCase
        "end" => 11,
      },
     ].each do |test_obj|
-      expect_validate(d.do_validate(test_obj, :json => true), true)
+      expect_validate(d.do_validate(test_obj, :stringlized => true), true)
     end
   end
 

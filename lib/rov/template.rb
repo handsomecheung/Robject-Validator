@@ -48,7 +48,7 @@ module Rov
       value = @raw_template_value
       validate_option = get_validate_option()
 
-      if validate_option[:json]
+      if validate_option[:stringlized]
         if value.is_a?(Hash)
           value = Common.string_hash_key(value)
           value = Common.with_symbol_access(value)
@@ -186,7 +186,7 @@ module Rov
 
     def required
       _required = @required
-      if get_validate_option[:json]
+      if get_validate_option[:stringlized]
         case
         when _required.is_a?(Hash)
           _required = Common.string_hash_key(_required)
@@ -204,7 +204,7 @@ module Rov
     end
 
     def do_custom_validate(actual_value)
-      if get_validate_option[:json]
+      if get_validate_option[:stringlized]
         case
         when actual_value.is_a?(Hash)
           actual_value = Common.with_symbol_access(actual_value)
