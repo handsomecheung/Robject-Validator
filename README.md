@@ -220,7 +220,7 @@ template.
 When object is returned by http server, the validation will fails if the object
 contains symbol object. All symbol objects are changed to string object.
 
-Rov provides a validation argument `:stringlized`, which will change symbol to
+Rov provides a validation argument `:json`, which will change symbol to
 string in template, even the Symbol class.
 
 ```ruby
@@ -231,17 +231,16 @@ string in template, even the Symbol class.
     "email" => "scarlet@email.com",
   }
   validator = Rov::Validate.new(Person)
-  status, error_msg = validator.do_validate(data, :stringlized => true)
-  end
+  status, error_msg = validator.do_validate(data, :json => true)
 ```
 
 The `data` above is correct as expected.
 
-If `kind_of(Symbol)` was defined in template, `:stringlized` will change it to
+If `kind_of(Symbol)` was defined in template, `:json` will change it to
 `kind_of(String)`.
 
 In the example Custom Validate Method we use the term `actual_value[:address]`,
-`:stringlized` will make actual_value `with_symbol_access` hash, whose string
+`:json` will make actual_value `with_symbol_access` hash, whose string
 key can be accessed by the symbol value.
 
 So don't worry if the difference between string and symbol.
