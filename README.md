@@ -26,12 +26,12 @@ Or install Rov from the git repo:
     $ gem build rov.gemspec
     $ gem install rov-{version}.gem
 
-## Basic usage
+## Basic Usage
 First all, you need to define a template for object. The template is a class
 inherited from `Rov::Template`, and your object is defined in the instance variable
 `@template` of the template class.
 
-For example, a hash object that contains several properties, name, sex, age, email:
+For example, a hash object that contains several properties, name, sex, age and email:
 
 ```ruby
   class Person < Rov::Template
@@ -214,4 +214,46 @@ template.
   person_cls = Rov::Template.create_template({:name => kind_of(String), :age => kind_of(Fixnum)})
   validator = Rov::Validate.new(person_cls)
   validator.do_validate(specific_data)
+```
+
+### Stringlized Object
+When object is returned by http server, the validation will fails if the object
+contains symbol object. All symbol objects are changed to string object.
+
+Rov provides a validation argument `:stringlized`, which will change symbol to
+string in template, even the Symbol class.
+
+```ruby
+  data = {
+    "name" => "Scarlet",
+    "age" => 30,
+    "sex" => "female",
+    "email" => "scarlet@email.com",
+  }
+  validator = Rov::Validate.new(Person)
+  status, error_msg = validator.do_validate(data, :stringlized => true)
+  end
+```
+
+The `data` above is correct as expected.
+
+If `kind_of(Symbol)` was defined in template, `:stringlized` will change it to
+`kind_of(String)`.
+
+In the example Custom Validate Method we use the term `actual_value[:address]`,
+`:stringlized` will make actual_value `with_symbol_access` hash, whose string
+key can be accessed by the symbol value.
+
+So don't worry if the difference between string and symbol.
+
+
+### Changing Template
+After defined, temlate can still be changed. Just as follows:
+
+```ruby
+  # change valude of key :name
+  Person.template[:name] = Rov::Template.anything
+
+  # change the whole template
+  Person.template = new_template
 ```
