@@ -176,6 +176,40 @@ the regex), so there is only `validate_method()` in `email()`. The method that r
 by `validate_method()` return two value(status and an empty string) if validation succeed.
 If validation fails, just call `raise_validation_error()` with a symbol.
 
+Another example:
+
+```ruby
+  def email()
+    email_cls = Class.new(Rov::Template) do
+      # @template =
+      def validate_method
+        m = lambda do |actual_value|
+          if actual_value.is_a?(String) and
+              (actual_value =~ /^[a-zA-Z0-9_.+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-.]+$/) == 0
+            [true, ""]
+          else
+            raise_validation_error(:invalid_email)
+          end
+        end
+        return m
+      end
+    end
+    return email_cls
+  end
+```
+
+There is a method named `start_with()` to make sure that specific data
+must start whit a certain string.
+
+```ruby
+  class Str < Rov::Template
+    @template = start_with("abc")
+  end
+
+  validator = Rov::Validate.new(Str)
+  status, error_msg = validator.do_validate("abcdef") # succeed
+```
+
 
 ### Custom Validation Method
 Sometimes, you may have some special requirements. Rov provides you a way to define

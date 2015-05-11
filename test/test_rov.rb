@@ -435,7 +435,7 @@ class TestBug < Test::Unit::TestCase
   end
 
 
-  def test_craate_template_method
+  def test_create_template_method
     template = {
       Rov::Template.any_of((1..10).to_a) => Rov::Template.kind_of(String),
       :total => Rov::Template.kind_of(Fixnum),
@@ -455,7 +455,7 @@ class TestBug < Test::Unit::TestCase
     expect_validate(validator.do_validate(actual_value), false, :type_error)
   end
 
-  def test_custom_template_method
+  def test_custom_template_method_email
     def email()
       email_cls = Class.new(Rov::Template) do
         # @template =
@@ -493,7 +493,33 @@ class TestBug < Test::Unit::TestCase
     template_cls = Rov::Template.create_template(email)
     validator = Rov::Validate.new(template_cls)
     expect_validate(validator.do_validate("email@e@mail.com"), false, :invalid_email)
+  end
 
+  def test_custom_template_method_start_with
+    def start_with(str)
+      start_with_cls = Class.new(Rov::Template) do
+        @template = str
+
+        def validate_method
+          m = lambda do |actual_value|
+            if actual_value.start_with?(self.get_template_value)
+              [true, ""]
+            else
+              raise_validation_error(:not_start_with)
+            end
+          end
+          return m
+        end
+      end
+      return start_with_cls
+    end
+
+    template_cls = Rov::Template.create_template(start_with("abc"))
+    validator = Rov::Validate.new(template_cls)
+
+    expect_validate(validator.do_validate("abcdef"), true)
+    expect_validate(validator.do_validate("123456"), false, :not_start_with)
+    expect_validate(validator.do_validate("123abc456"), false, :not_start_with)
   end
 
 end
