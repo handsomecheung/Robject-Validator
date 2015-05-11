@@ -1,4 +1,4 @@
-require 'lib/rov/version'
+require './lib/rov/version'
 
 Gem::Specification.new do |s|
   s.name = 'rov'
