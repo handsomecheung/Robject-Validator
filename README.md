@@ -179,22 +179,22 @@ If validation fails, just call `raise_validation_error()` with a symbol.
 Another example:
 
 ```ruby
-  def email()
-    email_cls = Class.new(Rov::Template) do
-      # @template =
+  def start_with(str)
+    start_with_cls = Class.new(Rov::Template) do
+      @template = str
+
       def validate_method
         m = lambda do |actual_value|
-          if actual_value.is_a?(String) and
-              (actual_value =~ /^[a-zA-Z0-9_.+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-.]+$/) == 0
+          if actual_value.start_with?(self.get_template_value)
             [true, ""]
           else
-            raise_validation_error(:invalid_email)
+            raise_validation_error(:not_start_with)
           end
         end
         return m
       end
     end
-    return email_cls
+    return start_with_cls
   end
 ```
 
