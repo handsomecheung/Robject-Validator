@@ -47,11 +47,11 @@ For example, a hash object that contains several properties, name, sex, age and 
 `kind_of` and `any_of` are class methods of Rov::Template.
 
 `kind_of()` takes one argument which is a class. It means the data must be a object
-of String(or its child class).
+of the class(or its child class).
 
 `any_of()` aslo takes one argument which is an array. It means the data must be a
 element of the array. The element of the array can be any type, symbol, string,
-class, or event a template class(yes, templates can be nested with each other).
+class, or even a template class(yes, templates can be nested with each other).
 
 After defined, Rov could validate the specific data. Suppose the specific data
 `data`:
@@ -65,7 +65,6 @@ After defined, Rov could validate the specific data. Suppose the specific data
   }
   validator = Rov::Validate.new(Person)
   status, error_msg = validator.do_validate(data)
-  end
 ```
 
 `do_validate` method return two value: the first is the result if validated or not, and
@@ -77,7 +76,7 @@ the second one is error massage if validation fails.
 If your hash object must contain several specified keys, you can use instance variable
 `@required`. `@required` must be given an array, element in which must present in
 specific data, or validation will fail. By default, `@required` is an empty array. that
-is, the specific data can an empty hash.
+means the specific data can an empty hash.
 
 For Example:
 
@@ -98,8 +97,8 @@ As definition, the specific `Person` data must contain `:name` and `:age`.
 
 ### Ordered Array
 If the template is given an array, then the specific data must be included in the array.
-By default, there is no restriction on the order of the elements. But you can want to
-do it, there is a instance variable `@ordered`. If `@ordered` will be set `true`, Rov
+By default, there is no restriction on the order of the elements. But there is a instance
+variable `@ordered` for restriction on the order. If `@ordered` will be set `true`, Rov
 will validate the specific array with the order which defined in template.
 
 
@@ -109,7 +108,7 @@ There are five available template methods:
 + `any_of()`
 
 As you known, `any_of()` means the specific data should be included in the given
-array. `any_of()` can be used anywhere, such as hash's key:
+array. It can be used anywhere, such as hash's key:
 
 ```ruby
   class People < Rov::Template
